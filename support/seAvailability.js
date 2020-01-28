@@ -45,7 +45,7 @@ function dockerCheck() {
           vblog('dockerCheck checking...');
           const str = `${data}`;
           logs += str;
-          if (str.match(/sn_hub/)) {
+          if (str.match(/se_hub/)) {
             vblog('dockerCheck success...');
             cmd.kill();
             clearTimeout(timeoutId);
@@ -59,7 +59,7 @@ function dockerCheck() {
     let running = false;
     const intervalId = setInterval(() => {
       checkTimes += 1;
-      if (checkTimes > 10) {
+      if (checkTimes > 20) {
         clearInterval(intervalId);
         cmd.kill();
         return;
@@ -81,14 +81,14 @@ function dockerCheck() {
     timeoutId = setTimeout(async () => {
       clearInterval(intervalId);
       resolve(`Timed out checking Selenium through docker compose${result ? (result.stderr || result.stdout) : ''} ${logs}`);
-    }, 5000);
+    }, 10000);
   });
 }
 
 const browserCount = 2; // How many browsers are we expecting?
-function snReadinessCheck(checkCommand, args = []) {
+function seReadinessCheck(checkCommand, args = []) {
   const t0 = Date.now();
-  vblog('snReadinessCheck...');
+  vblog('seReadinessCheck...');
   return new Promise(resolve => {
     let cmd;
     let nodes = 0;
@@ -100,7 +100,7 @@ function snReadinessCheck(checkCommand, args = []) {
       log += str;
       nodes += ([...str.matchAll(/Registered a node/)]).length;
       const timePassed = (Date.now() - t0) / 1000;
-      vblog(`${timePassed}s snReadinessCheck checking... nodes: ${nodes}`);
+      vblog(`${timePassed}s seReadinessCheck checking... nodes: ${nodes}`);
       if (nodes >= browserCount) {
         if (timeoutId) {
           clearTimeout(timeoutId);
@@ -123,8 +123,8 @@ function snReadinessCheck(checkCommand, args = []) {
   });
 }
 
-module.exports = async function snAvailability(host, options = {}) {
-  vblog('snAvailability start');
+module.exports = async function seAvailability(host, options = {}) {
+  vblog('seAvailability start');
   const { foreground } = { foreground: false, ...options };
   let availability = new Availability('selenium');
 
@@ -133,10 +133,12 @@ module.exports = async function snAvailability(host, options = {}) {
     if (dockerCheckMessage) {
       return availability.set({ message: dockerCheckMessage });
     }
-    const readinessMessage = await snReadinessCheck('docker', ['logs', '-f', 'ctsn_sn_hub_1']);
+    const readinessMessage = await seReadinessCheck('docker', ['logs', '-f', 'ctse_se_hub_1']);
     if (readinessMessage) {
       return availability.set({ message: readinessMessage });
     }
+  } else {
+    //
   }
 
   let browser;

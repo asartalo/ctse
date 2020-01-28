@@ -6,9 +6,9 @@ services:
       - /dev/shm:/dev/shm
       - ./build:/var/build
     depends_on:
-      - sn_hub
+      - se_hub
     environment:
-      HUB_HOST: sn_hub
+      HUB_HOST: se_hub
       NODE_MAX_SESSION: 1
       GRID_CLEAN_UP_CYCLE: 60000
       NODE_MAX_INSTANCES: 1
@@ -19,14 +19,14 @@ services:
       - /dev/shm:/dev/shm
       - ./build:/var/build
     depends_on:
-      - sn_hub
+      - se_hub
     environment:
-      HUB_HOST: sn_hub
+      HUB_HOST: se_hub
       NODE_MAX_SESSION: 1
       GRID_CLEAN_UP_CYCLE: 60000
       NODE_MAX_INSTANCES: 1
 
-  sn_hub:
+  se_hub:
     image: selenium/hub
     environment:
       GRID_BROWSER_TIMEOUT: 40

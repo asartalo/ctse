@@ -1,5 +1,5 @@
-const ctsnAvailability = require('./ctsnAvailability.js');
-const snAvailability = require('./snAvailability.js');
+const ctseAvailability = require('./ctseAvailability.js');
+const seAvailability = require('./seAvailability.js');
 
 function assertions(chai) {
   const { Assertion } = chai;
@@ -23,7 +23,7 @@ function assertions(chai) {
   });
 }
 
-assertions.ctsnAvailability = ctsnAvailability;
-assertions.snAvailability = snAvailability;
+assertions.ctseAvailability = ctseAvailability;
+assertions.seAvailability = seAvailability;
 
 module.exports = assertions;

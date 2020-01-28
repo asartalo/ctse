@@ -1,4 +1,4 @@
-# ctsn: Continuous Testing with Selenium
+# ctse: Continuous Testing with Selenium
 
 - A wrapper for Selenium and session manager
 
@@ -25,18 +25,18 @@
 Run the server with:
 
 ```sh
-ctsn
+ctse
 ```
 
 On your mocha tests:
 
 ```javascript
-import ctsn, { mocha } from 'ctsn';
+import ctse, { mocha } from 'ctse';
 
 describe('Smoke test', () => {
-  before(ctsn.start);
+  before(ctse.start);
 
-  after(ctsn.stop);
+  after(ctse.stop);
 
   describe('It shows the homepage', () => {
     mocha.runIt(async ({ browser, element }) => {

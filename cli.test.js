@@ -1,19 +1,38 @@
 const { expect, use } = require('chai');
-const ctseAssertions = require('./support/ctseAssertions.js');
+const ctSeAssertions = require('./support/ctSeAssertions.js');
 const shellRunner = require('./lib/shellRunner.js');
 
-const { ctseAvailability, seAvailability } = ctseAssertions;
+const { ctSeAvailability, seAvailability } = ctSeAssertions;
 const cliTimeout = 40000;
 
-use(ctseAssertions);
+use(ctSeAssertions);
+
+function createLogger() {
+  const observers = [];
+  const logged = [];
+  function logger(data) {
+    const toLog = `${data}`.trimEnd(/[\r\n]/);
+    logged.push(toLog);
+    observers.forEach(observer => observer(toLog, logged));
+  }
+
+  logger.observe = observer => {
+    observers.push(observer);
+    observer(logged.join('\n'), logged);
+  };
+
+  return logger;
+}
 
 describe('cli smoke tests', () => {
-  describe('When it is invoked', () => {
-    let cmd; let
-      cmdPromise;
+  let cmd;
+  let cmdPromise;
+  let logger;
 
+  describe('When it is invoked', () => {
     beforeEach(() => {
-      cmd = shellRunner('./cli.js', [], { shell: true });
+      logger = createLogger();
+      cmd = shellRunner('./cli.js', [], { shell: true, logger });
       cmdPromise = cmd.run();
     });
 
@@ -44,13 +63,13 @@ describe('cli smoke tests', () => {
 
     it('runs selenium docker', async function () {
       this.timeout(cliTimeout);
-      const availability = await seAvailability('localhost:4444');
+      const availability = await seAvailability('localhost:4444', { logger });
       expect(availability).to.be.available();
     });
 
     it('runs ctse server', async function () {
       this.timeout(cliTimeout);
-      const availability = await ctseAvailability();
+      const availability = await ctSeAvailability();
       expect(availability).to.be.available();
     });
 
@@ -62,7 +81,7 @@ describe('cli smoke tests', () => {
 
       it('does not run ctse server', async function () {
         this.timeout(cliTimeout);
-        const availability = await ctseAvailability();
+        const availability = await ctSeAvailability();
         expect(availability).not.to.be.available();
       });
 
@@ -86,30 +105,11 @@ describe('cli smoke tests', () => {
     });
   });
 
-  describe('When it is invoked to foregorund', () => {
-    let cmd;
-
+  describe('When it is invoked to foreground', () => {
     beforeEach(() => {
-      cmd = shellRunner('./cli.js', ['-f'], { shell: true });
-    });
-
-    it('runs selenium in the foreground', async function () {
-      this.timeout(cliTimeout);
-      const availability = await seAvailability('localhost:4444', { foreground: true });
-      expect(availability).to.be.available();
-    });
-
-    describe('when the cli script is stoppped', () => {
-      beforeEach(() => {
-        cmd.kill();
-        cmd = null;
-      });
-
-      it('does not run selenium in the foreground', async function () {
-        this.timeout(cliTimeout);
-        const availability = await seAvailability('localhost:4444', { foreground: true });
-        expect(availability).not.to.be.available();
-      });
+      logger = createLogger();
+      cmd = shellRunner('./cli.js', ['-f'], { shell: true, logger });
+      cmdPromise = cmd.run();
     });
 
     afterEach(function () {
@@ -121,6 +121,25 @@ describe('cli smoke tests', () => {
         } else {
           resolve();
         }
+      });
+    });
+
+    it('runs selenium in the foreground', async function () {
+      this.timeout(cliTimeout);
+      const availability = await seAvailability('localhost:4444', { foreground: true, logger });
+      expect(availability).to.be.available();
+    });
+
+    describe('when the cli script is stoppped', () => {
+      beforeEach(() => {
+        cmd.kill();
+        cmd = null;
+      });
+
+      it('does not run selenium in the foreground', async function () {
+        this.timeout(cliTimeout);
+        const availability = await seAvailability('localhost:4444', { foreground: true, logger });
+        expect(availability).not.to.be.available();
       });
     });
   });

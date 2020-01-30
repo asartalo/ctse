@@ -36,14 +36,16 @@ function dockerCheck() {
   return new Promise(resolve => {
     let logs = '';
     let timeoutId;
+    let running = false;
+    let checkTimes = 0;
 
     const cmd = shellRunner(
       'docker-compose',
       ['-f', './docker-compose-selenium.yml', 'top'],
       {
         logger: data => {
-          vblog('dockerCheck checking...');
           const str = `${data}`;
+          vblog('dockerCheck checking...', str);
           logs += str;
           if (str.match(/se_hub/)) {
             vblog('dockerCheck success...');
@@ -55,8 +57,6 @@ function dockerCheck() {
       },
     );
 
-    let checkTimes = 0;
-    let running = false;
     const intervalId = setInterval(() => {
       checkTimes += 1;
       if (checkTimes > 20) {
@@ -64,10 +64,11 @@ function dockerCheck() {
         cmd.kill();
         return;
       }
-      vblog(`dockerCheck try ${checkTimes}...`);
       if (!running) {
+        vblog(`dockerCheck try ${checkTimes}...`);
         running = true;
-        cmd.run().then(() => {
+        cmd.run().then(result => {
+          vblog(result);
           running = false;
           if (logs !== '') {
             clearInterval(intervalId);
@@ -85,47 +86,41 @@ function dockerCheck() {
   });
 }
 
-const browserCount = 2; // How many browsers are we expecting?
-function seReadinessCheck(checkCommand, args = []) {
+function seReadinessCheck(logger) {
   const t0 = Date.now();
   vblog('seReadinessCheck...');
   return new Promise(resolve => {
-    let cmd;
-    let nodes = 0;
     let log = '';
     let timeoutId;
+    let done = false;
 
-    function logger(data) {
-      const str = `${data}`;
+    logger.observe(str => {
+      if (done) {
+        return;
+      }
+
       log += str;
-      nodes += ([...str.matchAll(/Registered a node/)]).length;
       const timePassed = (Date.now() - t0) / 1000;
-      vblog(`${timePassed}s seReadinessCheck checking... nodes: ${nodes}`);
-      if (nodes >= browserCount) {
+      vblog(`${timePassed}s seReadinessCheck checking...`, str);
+      if (str.match(/CtSe: Selenium Server Ready/)) {
         if (timeoutId) {
           clearTimeout(timeoutId);
         }
-        setTimeout(() => {
-          vblog(log);
-          resolve(false);
-        }, 10000);
-        cmd.kill();
+        done = true;
+        vblog(log);
+        resolve(false);
       }
-    }
-
-    cmd = shellRunner(checkCommand, args, { logger });
+    });
 
     timeoutId = setTimeout(() => {
-      cmd.kill();
       resolve(`Timed out checking selenium server is ready ${log}`);
-    }, 14000);
-    cmd.run();
+    }, 25000);
   });
 }
 
 module.exports = async function seAvailability(host, options = {}) {
   vblog('seAvailability start');
-  const { foreground } = { foreground: false, ...options };
+  const { foreground, logger } = { foreground: false, ...options };
   let availability = new Availability('selenium');
 
   if (!foreground) {
@@ -133,12 +128,10 @@ module.exports = async function seAvailability(host, options = {}) {
     if (dockerCheckMessage) {
       return availability.set({ message: dockerCheckMessage });
     }
-    const readinessMessage = await seReadinessCheck('docker', ['logs', '-f', 'ctse_se_hub_1']);
-    if (readinessMessage) {
-      return availability.set({ message: readinessMessage });
-    }
-  } else {
-    //
+  }
+  const readinessMessage = await seReadinessCheck(logger);
+  if (readinessMessage) {
+    return availability.set({ message: readinessMessage });
   }
 
   let browser;
@@ -193,6 +186,6 @@ module.exports = async function seAvailability(host, options = {}) {
   }
 
   server.stop();
-  browser.stop();
+  await browser.stop();
   return availability;
 };

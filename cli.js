@@ -5,7 +5,7 @@ const { Command } = require('commander');
 
 const Selenium = require('./lib/Selenium');
 const SeleniumBackground = require('./lib/SeleniumBackground');
-const Ctse = require('./lib/Ctse.js');
+const CtSe = require('./lib/CtSe.js');
 
 const program = new Command();
 
@@ -17,16 +17,30 @@ function createLogger(...observers) {
   };
 }
 
-function createSeleniumChecker() {
+function createSeleniumChecker(foreground = false) {
+  let ready = false;
+  const readyMessage = 'CtSe: Selenium Server Ready';
+
+  if (foreground) {
+    return str => {
+      if (!ready) {
+        if (str.match(/Selenium started/)) {
+          ready = true;
+          console.log(readyMessage);
+        }
+      }
+    };
+  }
+
   const nBrowsers = 2;
   let registered = 0;
-  let ready = false;
+
   return str => {
     if (!ready) {
       registered += ([...str.matchAll(/Registered a node/)]).length;
       if (registered >= nBrowsers) {
         ready = true;
-        console.log('Ctse: Selenium Server Ready');
+        console.log(readyMessage);
       }
     }
   };
@@ -37,10 +51,10 @@ program
   .option('-f, --foreground', 'Run in the foreground')
   .action(({ foreground }) => {
     const SeleniumRunner = foreground ? Selenium : SeleniumBackground;
-    const seReady = createSeleniumChecker();
+    const seReady = createSeleniumChecker(foreground);
     const logger = createLogger(seReady);
     const runner = new SeleniumRunner(__dirname, { logger });
-    const app = Ctse.create();
+    const app = CtSe.create();
 
     process.on('beforeExit', () => runner.stop().then(() => {
       console.log('STOPPED WITH BEFOREEXIT');

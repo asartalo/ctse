@@ -2,14 +2,14 @@ const { IPC } = require('node-ipc');
 const { logger, outputLogs } = require('./customLogger.js');
 const Availability = require('./Availability.js');
 
-module.exports = function ctseAvailability() {
+module.exports = function ctSeAvailability() {
   const ipc = new IPC();
   ipc.config.logger = logger;
   ipc.config.maxRetries = 5;
   ipc.config.retry = 100;
 
   return new Promise(resolve => {
-    const availability = new Availability('ctseServer');
+    const availability = new Availability('ctSeServer');
 
     setTimeout(() => {
       resolve(availability.set({

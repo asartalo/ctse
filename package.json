@@ -1,7 +1,7 @@
 {
   "name": "ctse",
-  "version": "1.0.0",
-  "description": "Continuous testing wrapper for selenium",
+  "version": "0.1.0",
+  "description": "Continuous testing wrapper for Selenium",
   "main": "index.js",
   "scripts": {
     "lint-watch": "esw --color -w --clear",
@@ -18,7 +18,7 @@
   "bin": {
     "ctse": "./cli.js"
   },
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "chalk": "^3.0.0",
     "commander": "^4.0.1",

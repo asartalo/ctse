@@ -7,7 +7,7 @@ const shellRunner = require('../lib/shellRunner.js');
 
 const server = createServer(4000);
 
-const VERBOSE = false;
+const VERBOSE = !!process.env.CTSE_E2E_VERBOSE;
 function vblog(...args) {
   if (VERBOSE) {
     console.log.apply(null, args); // eslint-disable-line no-console

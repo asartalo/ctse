@@ -5,6 +5,13 @@ const shellRunner = require('./lib/shellRunner.js');
 const { ctSeAvailability, seAvailability } = ctSeAssertions;
 const cliTimeout = parseFloat(process.env.CTSE_E2E_TIMEOUT) || 40000;
 
+const VERBOSE = !!process.env.CTSE_E2E_VERBOSE;
+function vblog(...args) {
+  if (VERBOSE) {
+    console.log.apply(null, args); // eslint-disable-line no-console
+  }
+}
+
 use(ctSeAssertions);
 
 function createLogger() {
@@ -12,6 +19,7 @@ function createLogger() {
   const logged = [];
   function logger(data) {
     const toLog = `${data}`.trimEnd(/[\r\n]/);
+    vblog(toLog);
     logged.push(toLog);
     observers.forEach(observer => observer(toLog, logged));
   }

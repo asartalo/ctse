@@ -105,7 +105,7 @@ function seReadinessCheck(logger, testTimeout) {
 
       log += str;
       const timePassed = (Date.now() - t0) / 1000;
-      vblog(`${timePassed}s seReadinessCheck checking...`, str);
+      vblog(`${timePassed}s seReadinessCheck checking...`);
       if (str.match(/CtSe: Selenium Server Ready/)) {
         if (timeoutId) {
           clearTimeout(timeoutId);
@@ -155,13 +155,14 @@ module.exports = async function seAvailability(host, options = {}) {
   let message = await stepWatch('Server start fail', async () => {
     vblog('Starting test server');
     await server.start();
+    vblog('Server started');
   });
   if (message) {
     return availability.set({ message });
   }
 
   message = await stepWatch('Selenium client startup fail', async () => {
-    vblog({ host });
+    vblog({ host, url: server.url });
     browser = await chrome(host, server.url);
   });
   if (message) {

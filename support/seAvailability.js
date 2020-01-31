@@ -31,7 +31,8 @@ async function chrome(host, url) {
   };
 }
 
-function dockerCheck() {
+function dockerCheck(testTimeout) {
+  const timeout = 0.25 * testTimeout;
   vblog('dockerCheck...');
   return new Promise(resolve => {
     let logs = '';
@@ -57,9 +58,11 @@ function dockerCheck() {
       },
     );
 
+    const maxCheckTimes = Math.floor(timeout / 500);
+
     const intervalId = setInterval(() => {
       checkTimes += 1;
-      if (checkTimes > 20) {
+      if (checkTimes > maxCheckTimes) {
         clearInterval(intervalId);
         cmd.kill();
         return;
@@ -82,11 +85,12 @@ function dockerCheck() {
     timeoutId = setTimeout(async () => {
       clearInterval(intervalId);
       resolve(`Timed out checking Selenium through docker compose${result ? (result.stderr || result.stdout) : ''} ${logs}`);
-    }, 10000);
+    }, timeout);
   });
 }
 
-function seReadinessCheck(logger) {
+function seReadinessCheck(logger, testTimeout) {
+  const timeout = 0.625 * testTimeout;
   const t0 = Date.now();
   vblog('seReadinessCheck...');
   return new Promise(resolve => {
@@ -114,22 +118,22 @@ function seReadinessCheck(logger) {
 
     timeoutId = setTimeout(() => {
       resolve(`Timed out checking selenium server is ready ${log}`);
-    }, 25000);
+    }, timeout);
   });
 }
 
 module.exports = async function seAvailability(host, options = {}) {
   vblog('seAvailability start');
-  const { foreground, logger } = { foreground: false, ...options };
+  const { foreground, logger, timeout } = { foreground: false, ...options };
   let availability = new Availability('selenium');
 
   if (!foreground) {
-    const dockerCheckMessage = await dockerCheck();
+    const dockerCheckMessage = await dockerCheck(timeout);
     if (dockerCheckMessage) {
       return availability.set({ message: dockerCheckMessage });
     }
   }
-  const readinessMessage = await seReadinessCheck(logger);
+  const readinessMessage = await seReadinessCheck(logger, timeout);
   if (readinessMessage) {
     return availability.set({ message: readinessMessage });
   }

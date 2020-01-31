@@ -3,7 +3,7 @@ const ctSeAssertions = require('./support/ctSeAssertions.js');
 const shellRunner = require('./lib/shellRunner.js');
 
 const { ctSeAvailability, seAvailability } = ctSeAssertions;
-const cliTimeout = 40000;
+const cliTimeout = parseFloat(process.env.CTSE_E2E_TIMEOUT) || 40000;
 
 use(ctSeAssertions);
 
@@ -24,7 +24,7 @@ function createLogger() {
   return logger;
 }
 
-describe('cli smoke tests', () => {
+describe('cli end to end tests', () => {
   let cmd;
   let cmdPromise;
   let logger;
@@ -63,13 +63,13 @@ describe('cli smoke tests', () => {
 
     it('runs selenium docker', async function () {
       this.timeout(cliTimeout);
-      const availability = await seAvailability('localhost:4444', { logger });
+      const availability = await seAvailability('localhost:4444', { logger, timeout: cliTimeout });
       expect(availability).to.be.available();
     });
 
     it('runs ctse server', async function () {
       this.timeout(cliTimeout);
-      const availability = await ctSeAvailability();
+      const availability = await ctSeAvailability(cliTimeout);
       expect(availability).to.be.available();
     });
 
@@ -81,13 +81,13 @@ describe('cli smoke tests', () => {
 
       it('does not run ctse server', async function () {
         this.timeout(cliTimeout);
-        const availability = await ctSeAvailability();
+        const availability = await ctSeAvailability(cliTimeout);
         expect(availability).not.to.be.available();
       });
 
       it('does not run selenium docker', async function () {
         this.timeout(cliTimeout);
-        const availability = await seAvailability('localhost:4444');
+        const availability = await seAvailability('localhost:4444', { logger, timeout: cliTimeout });
         expect(availability).not.to.be.available();
       });
     });
@@ -126,7 +126,7 @@ describe('cli smoke tests', () => {
 
     it('runs selenium in the foreground', async function () {
       this.timeout(cliTimeout);
-      const availability = await seAvailability('localhost:4444', { foreground: true, logger });
+      const availability = await seAvailability('localhost:4444', { foreground: true, logger, timeout: cliTimeout });
       expect(availability).to.be.available();
     });
 
@@ -138,7 +138,7 @@ describe('cli smoke tests', () => {
 
       it('does not run selenium in the foreground', async function () {
         this.timeout(cliTimeout);
-        const availability = await seAvailability('localhost:4444', { foreground: true, logger });
+        const availability = await seAvailability('localhost:4444', { foreground: true, logger, timeout: cliTimeout });
         expect(availability).not.to.be.available();
       });
     });

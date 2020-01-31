@@ -6,7 +6,8 @@
     "lcov"
   ],
   "include": [
-    "src/**/*.js"
+    "lib/**/*.js",
+    "cli.js"
   ],
   "check-coverage": false,
   "cache": false

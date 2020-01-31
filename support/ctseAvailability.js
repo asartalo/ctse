@@ -2,11 +2,12 @@ const { IPC } = require('node-ipc');
 const { logger, outputLogs } = require('./customLogger.js');
 const Availability = require('./Availability.js');
 
-module.exports = function ctSeAvailability() {
+module.exports = function ctSeAvailability(testTimeout) {
+  const timeout = 0.25 * testTimeout;
   const ipc = new IPC();
   ipc.config.logger = logger;
-  ipc.config.maxRetries = 5;
-  ipc.config.retry = 100;
+  ipc.config.maxRetries = Math.floor(timeout / 200);
+  ipc.config.retry = 200;
 
   return new Promise(resolve => {
     const availability = new Availability('ctSeServer');
@@ -16,7 +17,7 @@ module.exports = function ctSeAvailability() {
         message: 'Attempt to connect to ctse server timed out',
         logs: outputLogs(),
       }));
-    }, 1000);
+    }, timeout);
 
     ipc.connectTo('ctse', () => {
       if (!ipc.of.ctse) {

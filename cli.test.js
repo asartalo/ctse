@@ -44,6 +44,18 @@ describe('cli end to end tests', () => {
       cmdPromise = cmd.run();
     });
 
+    afterEach(function () {
+      this.timeout(cliTimeout);
+      return new Promise(resolve => {
+        if (cmd) {
+          cmd.kill();
+          setTimeout(resolve, 0.125 * cliTimeout);
+        } else {
+          resolve();
+        }
+      });
+    });
+
     it('does not generate errors', function () {
       this.timeout(cliTimeout);
       setTimeout(() => {
@@ -71,7 +83,7 @@ describe('cli end to end tests', () => {
 
     it('runs selenium docker', async function () {
       this.timeout(cliTimeout);
-      const availability = await seAvailability('localhost:4444', { logger, timeout: cliTimeout });
+      const availability = await seAvailability('0.0.0.0:4444', { logger, timeout: cliTimeout });
       expect(availability).to.be.available();
     });
 
@@ -99,18 +111,6 @@ describe('cli end to end tests', () => {
         expect(availability).not.to.be.available();
       });
     });
-
-    afterEach(function () {
-      this.timeout(cliTimeout);
-      return new Promise(resolve => {
-        if (cmd) {
-          cmd.kill();
-          setTimeout(resolve, 5000);
-        } else {
-          resolve();
-        }
-      });
-    });
   });
 
   describe('When it is invoked to foreground', () => {
@@ -125,7 +125,7 @@ describe('cli end to end tests', () => {
       return new Promise(resolve => {
         if (cmd) {
           cmd.kill();
-          setTimeout(resolve, 5000);
+          setTimeout(resolve, 0.125 * cliTimeout);
         } else {
           resolve();
         }

@@ -7,7 +7,7 @@
     "lint-watch": "esw --color -w --clear",
     "install-selenium": "selenium-standalone install",
     "test-watch": "_mocha --watch './**/*.test.js'",
-    "test": "nyc _mocha './**/*.test.js'"
+    "test": "nyc _mocha --exit './**/*.test.js'"
   },
   "keywords": [
     "continuous",

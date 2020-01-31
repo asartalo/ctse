@@ -37,7 +37,7 @@ function createSeleniumChecker(foreground = false) {
 
   return str => {
     if (!ready) {
-      registered += ([...str.matchAll(/Registered a node/)]).length;
+      registered += ([...str.matchAll(/Registered a node/g)]).length;
       if (registered >= nBrowsers) {
         ready = true;
         console.log(readyMessage);

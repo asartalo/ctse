@@ -71,4 +71,5 @@ jobs:
           command: npm run test
           environment:
             CTSE_E2E_TIMEOUT: 50000
+            CTSE_E2E_VERBOSE: "yes"
 

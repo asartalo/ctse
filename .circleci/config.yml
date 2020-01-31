@@ -36,6 +36,11 @@ jobs:
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
 
+      - run:
+          name: Pull Docker Images
+          command: |
+            docker-compose -f ./docker-compose-selenium.yml pull
+
       # install selenium
       - run: 
           name: Selenium Standalone Installation 

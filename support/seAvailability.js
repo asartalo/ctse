@@ -42,7 +42,7 @@ function dockerCheck(testTimeout) {
 
     const cmd = shellRunner(
       'docker-compose',
-      ['-f', './docker-compose-selenium.yml', 'top'],
+      ['-p', 'ctse', '-f', './docker-compose-selenium.yml', 'top'],
       {
         logger: data => {
           const str = `${data}`;

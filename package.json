@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint-watch": "esw --color -w --clear",
+    "install-selenium": "selenium-standalone install",
     "test-watch": "_mocha --watch './**/*.test.js'",
     "test": "nyc _mocha --reporter=dot './**/*.test.js'"
   },

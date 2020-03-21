@@ -14,6 +14,10 @@ function vblog(...args) {
 
 use(ctSeAssertions);
 
+function pauseFor(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function createLogger() {
   const observers = [];
   const logged = [];
@@ -44,46 +48,44 @@ describe('cli end to end tests', () => {
       cmdPromise = cmd.run();
     });
 
-    afterEach(function () {
+    afterEach(async function () {
       this.timeout(cliTimeout);
-      return new Promise(resolve => {
-        if (cmd) {
-          cmd.kill();
-          setTimeout(resolve, 0.125 * cliTimeout);
-        } else {
-          resolve();
-        }
-      });
+      return cmd && await cmd.kill() && await pauseFor(5000);
     });
 
-    it('does not generate errors', function () {
+    it('does not generate errors', async function () {
       this.timeout(cliTimeout);
-      setTimeout(() => {
-        cmd.kill();
-        cmd = null;
-      }, 5000);
-
-      return new Promise((resolve, reject) => {
-        cmdPromise.then(result => {
-          if (result.stderr !== '') {
-            reject(Error(`Script has errors ${result.stderr}`));
-            return;
+      await new Promise(resolve => {
+        logger.observe(str => {
+          if ([...str.matchAll(/CtSe: Selenium Server Ready/g)].length > 0) {
+            resolve();
           }
-
-          if (result.code > 0) {
-            reject(Error(`Script returned code ${result.code} with output: ${result.stdout}`));
-            return;
-          }
-          resolve();
-        }).catch(e => {
-          Error(`Unhandled error ${e.message}`);
         });
+        setTimeout(() => resolve, 5000);
       });
+      await cmd.kill();
+      cmd = null;
+
+      let result;
+      try {
+        result = await cmdPromise;
+      } catch (e) {
+        throw Error(`Unhandled error ${e.message}`);
+      }
+
+      if (result.stderr !== '') {
+        throw Error(`Script has errors ${result.stderr}`);
+      }
+
+      if (result.code > 0) {
+        throw Error(`Script returned code ${result.code} with output: ${result.stdout}`);
+      }
+      await pauseFor(5000);
     });
 
     it('runs selenium docker', async function () {
       this.timeout(cliTimeout);
-      const availability = await seAvailability('0.0.0.0:4444', { logger, timeout: cliTimeout });
+      const availability = await seAvailability('localhost:4444', { logger, timeout: cliTimeout });
       expect(availability).to.be.available();
     });
 
@@ -94,9 +96,11 @@ describe('cli end to end tests', () => {
     });
 
     describe('when the cli script is stoppped', () => {
-      beforeEach(() => {
-        cmd.kill();
+      beforeEach(async function () {
+        this.timeout(cliTimeout);
+        await cmd.kill();
         cmd = null;
+        await pauseFor(5000);
       });
 
       it('does not run ctse server', async function () {
@@ -120,16 +124,12 @@ describe('cli end to end tests', () => {
       cmdPromise = cmd.run();
     });
 
-    afterEach(function () {
+    afterEach(async function () {
       this.timeout(cliTimeout);
-      return new Promise(resolve => {
-        if (cmd) {
-          cmd.kill();
-          setTimeout(resolve, 0.125 * cliTimeout);
-        } else {
-          resolve();
-        }
-      });
+      if (cmd) {
+        await cmd.kill();  
+        await pauseFor(5000);
+      }
     });
 
     it('runs selenium in the foreground', async function () {
@@ -139,9 +139,11 @@ describe('cli end to end tests', () => {
     });
 
     describe('when the cli script is stoppped', () => {
-      beforeEach(() => {
-        cmd.kill();
+      beforeEach(async function () {
+        this.timeout(cliTimeout);
+        await cmd.kill();
         cmd = null;
+        await pauseFor(5000);
       });
 
       it('does not run selenium in the foreground', async function () {

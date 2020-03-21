@@ -50,9 +50,10 @@ function dockerCheck(testTimeout) {
           logs += str;
           if (str.match(/se_hub/)) {
             vblog('dockerCheck success...');
-            cmd.kill();
-            clearTimeout(timeoutId);
-            resolve(false);
+            cmd.kill().then(() => {
+              clearTimeout(timeoutId);
+              resolve(false);
+            });
           }
         },
       },
@@ -64,8 +65,9 @@ function dockerCheck(testTimeout) {
       checkTimes += 1;
       if (checkTimes > maxCheckTimes) {
         clearInterval(intervalId);
-        cmd.kill();
-        return;
+        cmd.kill().then(() => {
+          resolve(`Tried checking docker at max of ${maxCheckTimes}`);
+        });
       }
       if (!running) {
         vblog(`dockerCheck try ${checkTimes}...`);

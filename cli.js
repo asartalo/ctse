@@ -10,9 +10,10 @@ const CtSe = require('./lib/CtSe.js');
 const program = new Command();
 
 function createLogger(...observers) {
+  const stdout = process.stdout;
   return data => {
-    const toLog = `${data}`.trimEnd(/[\r\n]/);
-    console.log(toLog);
+    stdout.write(data);
+    const toLog = `${data}`;
     observers.forEach(observer => observer(toLog));
   };
 }

@@ -30,6 +30,7 @@ module.exports = function ctSeAvailability(testTimeout) {
       ipc.of.ctse.on('connect', () => {
         ipc.disconnect('ctse');
         resolve(availability.set({
+          message: 'CtSe is available',
           available: true,
         }));
       });

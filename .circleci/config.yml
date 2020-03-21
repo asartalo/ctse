@@ -9,77 +9,77 @@ jobs:
       # specify the version you desire here
       - image: circleci/node:12.13-browsers
 
-        # Specify service dependencies here if necessary
-        # CircleCI maintains a library of pre-built images
-        # documented at https://circleci.com/docs/2.0/circleci-images/
-        # - image: circleci/mongo:3.4.4
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
 
-        working_directory: ~/repo
+    working_directory: ~/repo
 
-        steps:
-          - setup_remote_docker
-          - checkout
+    steps:
+      - setup_remote_docker
+      - checkout
 
-            # Download and cache dependencies
-          - restore_cache:
-            keys:
-              - v1-dependencies-{{ checksum "package.json" }}
-                # fallback to using the latest cache if no exact match is found
-              - v1-dependencies-
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
 
-              - run: npm install
+      - run: npm install
 
-              - run:
-                name: Install Docker Compose
-                command: |
-                  curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-                  chmod +x ~/docker-compose
-                  sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - run:
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
 
-              - run:
-                name: Pull Docker Images
-                command: |
-                  docker-compose -f ./docker-compose-selenium.yml pull
+      - run:
+          name: Pull Docker Images
+          command: |
+            docker-compose -f ./docker-compose-selenium.yml pull
 
-                  # install selenium
-              - run:
-                name: Selenium Standalone Installation
-                command: npm run install-selenium
+      # install selenium
+      - run: 
+          name: Selenium Standalone Installation 
+          command: npm run install-selenium
 
-                # stop any running selenium instance
-              - run:
-                name: Stop Internal Selenium
-                command: fuser -k 4444/tcp
+      # stop any running selenium instance
+      - run:
+          name: Stop Internal Selenium
+          command: fuser -k 4444/tcp
 
-              - save_cache:
-                paths:
-                  - node_modules
-                key: v1-dependencies-{{ checksum "package.json" }}
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
 
-                # - run:
-                #     name: Setup Code Climate test-reporter
-                #     command: |
-                #       # download test reporter as a static binary
-                #       curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-                #       chmod +x ./cc-test-reporter
+      # - run:
+      #     name: Setup Code Climate test-reporter
+      #     command: |
+      #       # download test reporter as a static binary
+      #       curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+      #       chmod +x ./cc-test-reporter
 
-                # - run:
-                #     name: Run Unit Tests
-                #     command: |
-                #       # notify Code Climate of a pending test report using `before-build`
-                #       ./cc-test-reporter before-build
-                #       npm run test
-                #       # upload test report to Code Climate using `after-build`
-                #       ./cc-test-reporter after-build --coverage-input-type lcov
-                #       # send coverage report to coveralls
-                #       npm run coveralls-report
+      # - run: 
+      #     name: Run Unit Tests
+      #     command: |
+      #       # notify Code Climate of a pending test report using `before-build`
+      #       ./cc-test-reporter before-build
+      #       npm run test
+      #       # upload test report to Code Climate using `after-build`
+      #       ./cc-test-reporter after-build --coverage-input-type lcov
+      #       # send coverage report to coveralls
+      #       npm run coveralls-report
 
 
-                # run tests
-                  - run:
-                    name: Run Tests
-                    command: npm run test
-                    environment:
-                      CTSE_E2E_TIMEOUT: 60000
-                      CTSE_E2E_VERBOSE: "yes"
+      # run tests
+      - run: 
+          name: Run Tests
+          command: npm run test
+          environment:
+            CTSE_E2E_TIMEOUT: 60000
+            CTSE_E2E_VERBOSE: "yes"
 

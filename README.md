@@ -1,5 +1,9 @@
 # ctse: Continuous Testing with Selenium
 
+[![CircleCI](https://circleci.com/gh/asartalo/ctse.svg?style=svg)](https://circleci.com/gh/asartalo/ctse)
+
+## The Problem:
+
 - A wrapper for Selenium and session manager
 
 ## The Problem:

@@ -10,7 +10,8 @@
     "test-watch-fast": "_mocha --watch --grep @slow --invert './{,!(node_modules)/**}/*.test.js'",
     "test-watch-unit": "_mocha --watch --grep @e2e --invert './{,!(node_modules)/**}/*.test.js'",
     "test-unit": "nyc _mocha --exit --grep @e2e --invert './{,!(node_modules)/**}/*.test.js'",
-    "test": "nyc _mocha --exit './{,!(node_modules)/**}/*.test.js'"
+    "test": "nyc _mocha --exit './{,!(node_modules)/**}/*.test.js'",
+    "coveralls-report": "nyc report --reporter=text-lcov | coveralls"
   },
   "keywords": [
     "continuous",
@@ -40,6 +41,7 @@
     "@types/sinon-chai": "^3.2.4",
     "chai": "^4.2.0",
     "chokidar": "^3.3.0",
+    "coveralls": "^3.0.11",
     "dirty-chai": "^2.0.1",
     "eslint": "^6.7.2",
     "eslint-config-airbnb-base": "^14.0.0",

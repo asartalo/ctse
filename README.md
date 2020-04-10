@@ -1,6 +1,8 @@
 # ctse: Continuous Testing with Selenium
 
 [![CircleCI](https://circleci.com/gh/asartalo/ctse.svg?style=svg)](https://circleci.com/gh/asartalo/ctse)
+[![Maintainability](https://api.codeclimate.com/v1/badges/5d5bd2435aee4a409cc3/maintainability)](https://codeclimate.com/github/asartalo/ctse/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/5d5bd2435aee4a409cc3/test_coverage)](https://codeclimate.com/github/asartalo/ctse/test_coverage)
 
 ## The Problem:
 
@@ -13,7 +15,6 @@
 - If I do another save while a test is still running, Selenium test sessions aren't closed properly leading to multiple browser windows open
 - I don't have a separate machine that can run a Selenium server
 
-
 ## Non-problems:
 
 - Speed: I don't need it to be fast, I just need it to run in parallel while I'm coding
@@ -22,7 +23,6 @@
 
 - Run Selenium in the background using docker!
 - Manage Selenium sessions and communicate with the manager only
-
 
 ## Usage
 

@@ -7,10 +7,10 @@
     "lint-watch": "esw --color -w --clear",
     "install-selenium": "selenium-standalone install",
     "test-watch": "_mocha --watch './**/*.test.js'",
-    "test-watch-fast": "_mocha --watch --grep @slow --invert './**/*.test.js'",
-    "test-watch-unit": "_mocha --watch --grep @e2e --invert './**/*.test.js'",
-    "test-unit": "nyc _mocha --exit --grep @e2e --invert './**/*.test.js'",
-    "test": "nyc _mocha --exit './**/*.test.js'"
+    "test-watch-fast": "_mocha --watch --grep @slow --invert './{,!(node_modules)/**}/*.test.js'",
+    "test-watch-unit": "_mocha --watch --grep @e2e --invert './{,!(node_modules)/**}/*.test.js'",
+    "test-unit": "nyc _mocha --exit --grep @e2e --invert './{,!(node_modules)/**}/*.test.js'",
+    "test": "nyc _mocha --exit './{,!(node_modules)/**}/*.test.js'"
   },
   "keywords": [
     "continuous",
@@ -34,9 +34,13 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
+    "@types/dirty-chai": "^2.0.2",
     "@types/node-ipc": "^9.1.2",
+    "@types/sinon": "^9.0.0",
+    "@types/sinon-chai": "^3.2.4",
     "chai": "^4.2.0",
     "chokidar": "^3.3.0",
+    "dirty-chai": "^2.0.1",
     "eslint": "^6.7.2",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
@@ -44,6 +48,8 @@
     "eslint-watch": "^6.0.1",
     "ip": "^1.1.5",
     "mocha": "^7.1.1",
-    "nyc": "^14.1.1"
+    "nyc": "^14.1.1",
+    "sinon": "^9.0.2",
+    "sinon-chai": "^3.5.0"
   }
 }

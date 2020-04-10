@@ -36,7 +36,7 @@ function createLogger() {
   return logger;
 }
 
-describe('cli end to end tests', () => {
+describe('cli end to end tests @slow @e2e', () => {
   let cmd;
   let cmdPromise;
   let logger;
@@ -50,7 +50,7 @@ describe('cli end to end tests', () => {
 
     afterEach(async function () {
       this.timeout(cliTimeout);
-      return cmd && await cmd.kill() && await pauseFor(5000);
+      return cmd && (await cmd.kill()) && (await pauseFor(5000));
     });
 
     it('does not generate errors', async function () {
@@ -111,7 +111,10 @@ describe('cli end to end tests', () => {
 
       it('does not run selenium docker', async function () {
         this.timeout(cliTimeout);
-        const availability = await seAvailability('localhost:4444', { logger, timeout: cliTimeout });
+        const availability = await seAvailability('localhost:4444', {
+          logger,
+          timeout: cliTimeout,
+        });
         expect(availability).not.to.be.available();
       });
     });
@@ -127,14 +130,18 @@ describe('cli end to end tests', () => {
     afterEach(async function () {
       this.timeout(cliTimeout);
       if (cmd) {
-        await cmd.kill();  
+        await cmd.kill();
         await pauseFor(5000);
       }
     });
 
     it('runs selenium in the foreground', async function () {
       this.timeout(cliTimeout);
-      const availability = await seAvailability('localhost:4444', { foreground: true, logger, timeout: cliTimeout });
+      const availability = await seAvailability('localhost:4444', {
+        foreground: true,
+        logger,
+        timeout: cliTimeout,
+      });
       expect(availability).to.be.available();
     });
 
@@ -148,7 +155,11 @@ describe('cli end to end tests', () => {
 
       it('does not run selenium in the foreground', async function () {
         this.timeout(cliTimeout);
-        const availability = await seAvailability('localhost:4444', { foreground: true, logger, timeout: cliTimeout });
+        const availability = await seAvailability('localhost:4444', {
+          foreground: true,
+          logger,
+          timeout: cliTimeout,
+        });
         expect(availability).not.to.be.available();
       });
     });

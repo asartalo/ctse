@@ -42,14 +42,9 @@ jobs:
             docker-compose -f ./docker-compose-selenium.yml pull
 
       # install selenium
-      - run: 
-          name: Selenium Standalone Installation 
-          command: npm run install-selenium
-
-      # stop any running selenium instance
       - run:
-          name: Stop Internal Selenium
-          command: fuser -k 4444/tcp
+          name: Selenium Standalone Installation
+          command: npm run install-selenium
 
       - save_cache:
           paths:
@@ -63,7 +58,7 @@ jobs:
       #       curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
       #       chmod +x ./cc-test-reporter
 
-      # - run: 
+      # - run:
       #     name: Run Unit Tests
       #     command: |
       #       # notify Code Climate of a pending test report using `before-build`
@@ -74,12 +69,12 @@ jobs:
       #       # send coverage report to coveralls
       #       npm run coveralls-report
 
-
       # run tests
-      - run: 
+      - run:
           name: Run Tests
-          command: npm run test
+          command: npm run test-unit
+          # Uncomment the following if we can do e2e tests properly
+          # command: npm run test
           environment:
             CTSE_E2E_TIMEOUT: 60000
-            CTSE_E2E_VERBOSE: "yes"
-
+            CTSE_E2E_VERBOSE: 'yes'

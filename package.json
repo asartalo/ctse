@@ -40,6 +40,7 @@
     "@types/sinon": "^9.0.0",
     "@types/sinon-chai": "^3.2.4",
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "chokidar": "^3.3.0",
     "coveralls": "^3.0.11",
     "dirty-chai": "^2.0.1",

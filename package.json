@@ -6,10 +6,11 @@
   "scripts": {
     "lint-watch": "esw --color -w --clear",
     "install-selenium": "selenium-standalone install",
-    "test-watch": "_mocha --watch './**/*.test.js'",
+    "test-watch": "_mocha --watch './{,!(node_modules)/**}/*.test.js'",
     "test-watch-fast": "_mocha --watch --grep @slow --invert './{,!(node_modules)/**}/*.test.js'",
     "test-watch-unit": "_mocha --watch --grep @e2e --invert './{,!(node_modules)/**}/*.test.js'",
     "test-unit": "nyc _mocha --exit --grep @e2e --invert './{,!(node_modules)/**}/*.test.js'",
+    "test-e2e": "nyc _mocha --exit --grep @e2e './{,!(node_modules)/**}/*.test.js'",
     "test": "nyc _mocha --exit './{,!(node_modules)/**}/*.test.js'",
     "coveralls-report": "nyc report --reporter=text-lcov | coveralls"
   },

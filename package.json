@@ -26,6 +26,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@sprnz/wait": "^1.1.2",
     "chalk": "^3.0.0",
     "commander": "^4.0.1",
     "node-ipc": "^9.1.1",

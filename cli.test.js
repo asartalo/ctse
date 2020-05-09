@@ -95,7 +95,7 @@ describe('cli end to end tests @slow @e2e', () => {
       expect(availability).to.be.available();
     });
 
-    describe('when the cli script is stoppped', () => {
+    describe('when the cli script is stopped', () => {
       beforeEach(async function () {
         this.timeout(cliTimeout);
         await cmd.kill();

@@ -50,7 +50,9 @@ describe('cli end to end tests @slow @e2e', () => {
 
     afterEach(async function () {
       this.timeout(cliTimeout);
-      return cmd && (await cmd.kill()) && (await pauseFor(5000));
+      const result = cmd && (await cmd.kill());
+      await pauseFor(5000);
+      return result;
     });
 
     it('does not generate errors', async function () {

@@ -4,9 +4,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/5d5bd2435aee4a409cc3/maintainability)](https://codeclimate.com/github/asartalo/ctse/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/5d5bd2435aee4a409cc3/test_coverage)](https://codeclimate.com/github/asartalo/ctse/test_coverage)
 
-## The Problem:
-
-- A wrapper for Selenium and session manager
+A wrapper for Selenium and session manager
 
 ## The Problem:
 
@@ -15,11 +13,11 @@
 - If I do another save while a test is still running, Selenium test sessions aren't closed properly leading to multiple browser windows open
 - I don't have a separate machine that can run a Selenium server
 
-## Non-problems:
+### Non-problems:
 
 - Speed: I don't need it to be fast, I just need it to run in parallel while I'm coding
 
-## The Idea:
+### The Idea:
 
 - Run Selenium in the background using docker!
 - Manage Selenium sessions and communicate with the manager only
@@ -49,4 +47,18 @@ describe('Smoke test', () => {
     });
   });
 });
+```
+
+## Development
+
+### Requirements
+
+- node
+- docker
+
+### Preparing the Development Environment
+
+```sh
+npm install
+npm run install-selenium
 ```

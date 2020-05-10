@@ -4,6 +4,7 @@
   "description": "Continuous testing wrapper for Selenium",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
     "lint-watch": "esw --color -w --clear",
     "install-selenium": "selenium-standalone install",
     "test-watch": "_mocha --watch './{,!(node_modules)/**}/*.test.js'",
@@ -12,6 +13,7 @@
     "test-unit": "nyc _mocha --exit --grep @e2e --invert './{,!(node_modules)/**}/*.test.js'",
     "test-e2e": "nyc _mocha --exit --grep @e2e './{,!(node_modules)/**}/*.test.js'",
     "test": "nyc _mocha --exit './{,!(node_modules)/**}/*.test.js'",
+    "check-uncommitted": "test -z \"$(git status --porcelain)\" || (>&2 echo \"You have uncommitted changes\" && exit 1)",
     "coveralls-report": "nyc report --reporter=text-lcov | coveralls"
   },
   "keywords": [
@@ -25,7 +27,16 @@
     "ctse": "./cli.js"
   },
   "license": "MIT",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run check-uncommitted && npm run test-unit"
+    }
+  },
   "dependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
     "@sprnz/wait": "^1.1.2",
     "chalk": "^3.0.0",
     "commander": "^4.0.1",
@@ -51,6 +62,7 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-mocha": "^6.2.2",
     "eslint-watch": "^6.0.1",
+    "husky": "^4.2.5",
     "ip": "^1.1.5",
     "mocha": "^7.1.1",
     "nyc": "^14.1.1",

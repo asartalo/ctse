@@ -12,6 +12,7 @@
     "test-watch-unit": "_mocha --watch --grep @e2e --invert './{,!(node_modules)/**}/*.test.js'",
     "test-unit": "nyc _mocha --exit --grep @e2e --invert './{,!(node_modules)/**}/*.test.js'",
     "test-e2e": "nyc _mocha --exit --grep @e2e './{,!(node_modules)/**}/*.test.js'",
+    "test-e2e-verbose": "CTSE_E2E_VERBOSE=yes npm run test e2e",
     "test": "nyc _mocha --exit './{,!(node_modules)/**}/*.test.js'",
     "check-uncommitted": "test -z \"$(git status --porcelain)\" || (>&2 echo \"You have uncommitted changes\" && exit 1)",
     "coveralls-report": "nyc report --reporter=text-lcov | coveralls"

@@ -45,7 +45,8 @@
     "readline-stream": "^1.0.2",
     "selenium-standalone": "^6.17.0",
     "selenium-webdriver": "^4.0.0-alpha.7",
-    "tree-kill": "^1.2.2"
+    "tree-kill": "^1.2.2",
+    "uuid": "^8.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",

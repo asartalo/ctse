@@ -9,9 +9,9 @@
     "install-selenium": "selenium-standalone install",
     "test-watch": "_mocha --watch './{,!(node_modules)/**}/*.test.js'",
     "test-watch-fast": "_mocha --watch --grep @slow --invert './{,!(node_modules)/**}/*.test.js'",
-    "test-watch-unit": "_mocha --watch --grep @e2e --invert './{,!(node_modules)/**}/*.test.js'",
-    "test-unit": "nyc _mocha --exit --grep @e2e --invert './{,!(node_modules)/**}/*.test.js'",
-    "test-e2e": "nyc _mocha --exit --grep @e2e './{,!(node_modules)/**}/*.test.js'",
+    "test-watch-unit": "_mocha --watch --grep './lib/**/*.test.js'",
+    "test-unit": "nyc _mocha --exit './lib/**/*.test.js'",
+    "test-e2e": "nyc _mocha --exit './e2e/**/*.test.js'",
     "test-e2e-verbose": "CTSE_E2E_VERBOSE=yes npm run test e2e",
     "test": "nyc _mocha --exit './{,!(node_modules)/**}/*.test.js'",
     "check-uncommitted": "test -z \"$(git status --porcelain)\" || (>&2 echo \"You have uncommitted changes\" && exit 1)",
@@ -36,8 +36,6 @@
     }
   },
   "dependencies": {
-    "@commitlint/cli": "^8.3.5",
-    "@commitlint/config-conventional": "^8.3.4",
     "@sprnz/wait": "^1.1.2",
     "chalk": "^3.0.0",
     "commander": "^4.0.1",
@@ -49,6 +47,8 @@
     "uuid": "^8.1.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
     "@types/chai": "^4.2.11",
     "@types/dirty-chai": "^2.0.2",
     "@types/node-ipc": "^9.1.2",

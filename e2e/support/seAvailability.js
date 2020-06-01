@@ -3,7 +3,7 @@ const chromeSn = require('selenium-webdriver/chrome');
 
 const Availability = require('./Availability.js');
 const createServer = require('./createServer.js');
-const shellRunner = require('../lib/shellRunner.js');
+const shellRunner = require('../../lib/shellRunner.js');
 
 const server = createServer(4000);
 
@@ -86,7 +86,11 @@ function dockerCheck(testTimeout) {
     let result;
     timeoutId = setTimeout(async () => {
       clearInterval(intervalId);
-      resolve(`Timed out checking Selenium through docker compose${result ? (result.stderr || result.stdout) : ''} ${logs}`);
+      resolve(
+        `Timed out checking Selenium through docker compose${
+          result ? result.stderr || result.stdout : ''
+        } ${logs}`,
+      );
     }, timeout);
   });
 }

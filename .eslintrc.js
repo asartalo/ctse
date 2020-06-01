@@ -33,6 +33,12 @@ module.exports = {
       },
     },
     {
+      files: ['e2e/support/**/*.js'],
+      rules: {
+        'import/no-extraneous-dependencies': 'off',
+      },
+    },
+    {
       files: ['mocha*.js'],
       rules: {
         'import/no-extraneous-dependencies': 'off',

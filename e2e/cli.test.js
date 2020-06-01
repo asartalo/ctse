@@ -1,6 +1,6 @@
 const { expect, use } = require('chai');
 const ctSeAssertions = require('./support/ctSeAssertions.js');
-const shellRunner = require('./lib/shellRunner.js');
+const shellRunner = require('../lib/shellRunner.js');
 
 const { ctSeAvailability, seAvailability } = ctSeAssertions;
 const cliTimeout = parseFloat(process.env.CTSE_E2E_TIMEOUT) || 40000;
@@ -36,12 +36,12 @@ function createLogger() {
   return logger;
 }
 
-describe('cli end to end tests @slow @e2e', () => {
+describe('cli end to end tests @slow', () => {
   let cmd;
   let cmdPromise;
   let logger;
 
-  describe('When it is invoked', () => {
+  describe('When it is invoked @docker', () => {
     beforeEach(() => {
       logger = createLogger();
       cmd = shellRunner('./cli.js', [], { shell: true, logger });

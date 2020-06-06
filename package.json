@@ -21,6 +21,7 @@
     "lint-then-test": "eslint . && npm run test-unit",
     "install-selenium": "selenium-standalone install",
     "test-watch": "_mocha --watch './{,!(node_modules)/**}/*.test.js'",
+    "test-watch-verbose": "CTSE_E2E_VERBOSE=yes _mocha --watch './{,!(node_modules)/**}/*.test.js'",
     "test-watch-fast": "_mocha --watch --grep @slow --invert './{,!(node_modules)/**}/*.test.js'",
     "test-watch-unit": "_mocha --watch --grep './lib/**/*.test.js'",
     "test-unit": "nyc _mocha --exit './lib/**/*.test.js'",

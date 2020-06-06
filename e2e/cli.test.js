@@ -1,4 +1,5 @@
 const { expect, use } = require('chai');
+const wait = require('@sprnz/wait');
 const ctSeAssertions = require('./support/ctSeAssertions.js');
 const shellRunner = require('../lib/shellRunner.js');
 
@@ -13,10 +14,6 @@ function vblog(...args) {
 }
 
 use(ctSeAssertions);
-
-function pauseFor(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 function createLogger() {
   const observers = [];
@@ -41,7 +38,7 @@ describe('cli end to end tests @slow', () => {
   let cmdPromise;
   let logger;
 
-  describe('When it is invoked @docker', () => {
+  describe('When it is invoked to run selenium in the background @docker', () => {
     beforeEach(() => {
       logger = createLogger();
       cmd = shellRunner('./cli.js', [], { shell: true, logger });
@@ -51,7 +48,7 @@ describe('cli end to end tests @slow', () => {
     afterEach(async function () {
       this.timeout(cliTimeout);
       const result = cmd && (await cmd.kill());
-      await pauseFor(5000);
+      await wait(5000);
       return result;
     });
 
@@ -82,7 +79,6 @@ describe('cli end to end tests @slow', () => {
       if (result.code > 0) {
         throw Error(`Script returned code ${result.code} with output: ${result.stdout}`);
       }
-      await pauseFor(5000);
     });
 
     it('runs selenium docker', async function () {
@@ -102,7 +98,7 @@ describe('cli end to end tests @slow', () => {
         this.timeout(cliTimeout);
         await cmd.kill();
         cmd = null;
-        await pauseFor(5000);
+        await wait(5000);
       });
 
       it('does not run ctse server', async function () {
@@ -122,7 +118,7 @@ describe('cli end to end tests @slow', () => {
     });
   });
 
-  describe('When it is invoked to foreground', () => {
+  describe('When it is invoked to run selenium in the foreground', () => {
     beforeEach(() => {
       logger = createLogger();
       cmd = shellRunner('./cli.js', ['-f'], { shell: true, logger });
@@ -133,7 +129,7 @@ describe('cli end to end tests @slow', () => {
       this.timeout(cliTimeout);
       if (cmd) {
         await cmd.kill();
-        await pauseFor(5000);
+        await wait(5000);
       }
     });
 
@@ -151,8 +147,7 @@ describe('cli end to end tests @slow', () => {
       beforeEach(async function () {
         this.timeout(cliTimeout);
         await cmd.kill();
-        cmd = null;
-        await pauseFor(5000);
+        await wait(5000);
       });
 
       it('does not run selenium in the foreground', async function () {

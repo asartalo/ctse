@@ -28,6 +28,7 @@
     "test-e2e": "nyc _mocha --exit './e2e/**/*.test.js'",
     "test-e2e-verbose": "CTSE_E2E_VERBOSE=yes npm run test e2e",
     "test": "nyc _mocha --exit './{,!(node_modules)/**}/*.test.js'",
+    "test-no-docker": "nyc _mocha --exit --grep @docker --invert  './{lib,e2e}/**/*.test.js'",
     "watch": "npm-watch"
   },
   "keywords": [

@@ -54,7 +54,7 @@ jobs:
       # run tests
       - run:
           name: Run Tests
-          command: npm run test-unit
+          command: npm run test-no-docker
           # Uncomment the following if we can do e2e tests properly
           # command: npm run test
           environment:

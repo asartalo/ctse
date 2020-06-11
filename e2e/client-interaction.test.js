@@ -60,6 +60,18 @@ describe('Client end-to-end', () => {
         const { hello } = obj;
         expect(await hello()).to.eql('Hello from ctse!');
       });
+
+      it('can pass basic arguments to function', async () => {
+        const obj = await session.start();
+        const { hello } = obj;
+        expect(await hello('Alia')).to.eql('Hello, Alia!');
+      });
+
+      it('can call complex async calls', async () => {
+        const obj = await session.start();
+        const { addResolver, one } = obj;
+        expect(await addResolver(one())).to.eql(2);
+      });
     });
   });
 });

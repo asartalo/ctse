@@ -18,7 +18,7 @@
     "coveralls-report": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint .",
     "lint-watch": "esw --color -w --clear",
-    "lint-then-test": "eslint . && npm run test-unit",
+    "lint-then-test": "eslint . && npm run test-fast",
     "install-selenium": "selenium-standalone install",
     "test-watch": "_mocha --watch './{,!(node_modules)/**}/*.test.js'",
     "test-watch-verbose": "CTSE_E2E_VERBOSE=yes _mocha --watch './{,!(node_modules)/**}/*.test.js'",
@@ -29,6 +29,7 @@
     "test-e2e-verbose": "CTSE_E2E_VERBOSE=yes npm run test e2e",
     "test": "nyc _mocha --exit './{,!(node_modules)/**}/*.test.js'",
     "test-no-docker": "nyc _mocha --exit --grep @docker --invert  './{lib,e2e}/**/*.test.js'",
+    "test-fast": "nyc _mocha --exit --grep @slow --invert  './{lib,e2e}/**/*.test.js'",
     "watch": "npm-watch"
   },
   "keywords": [

@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Hello CtSe",
+  "version": "1.0",
+  "description": "Adds a Hello CtSe to any page",
+  "icons": {
+    "48": "hello.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["index.js"]
+    }
+  ]
+}

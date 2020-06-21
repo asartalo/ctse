@@ -1,8 +1,10 @@
 const { expect } = require('chai');
-const wait = require('@sprnz/wait');
 const ClientSession = require('../lib/ClientSession');
 const Client = require('../lib/Client');
 const CLI = require('../lib/CLI');
+const createServer = require('./support/createServer.js');
+
+const server = createServer(4000);
 
 describe('Client end-to-end', () => {
   let client;
@@ -19,19 +21,21 @@ describe('Client end-to-end', () => {
   describe('when it connects to a running server', () => {
     let ctse;
 
-    beforeEach(async () => {
+    beforeEach(async function () {
+      this.timeout(5000);
       // Start server
-      cli = CLI.create({ se: false });
+      cli = CLI.create({ foreground: true });
       ctse = cli.app;
       ctse.start();
-      await wait(500);
-
+      await server.start();
       await client.connect();
     });
 
-    afterEach(async () => {
+    afterEach(async function () {
+      this.timeout(5000);
       await ctse.stop();
       await client.disconnect();
+      await server.stop();
     });
 
     it('connects', async () => {
@@ -47,17 +51,18 @@ describe('Client end-to-end', () => {
       let session;
 
       beforeEach(async function () {
-        this.timeout = 5000;
+        this.timeout(5000);
         session = await client.requestSession();
       });
+
+      afterEach(() => session.reset());
 
       it('creates it successfully', () => {
         expect(session).to.be.an.instanceof(ClientSession);
       });
 
       it('can be used to obtain hello function', async () => {
-        const obj = await session.start();
-        const { hello } = obj;
+        const { hello } = await session.start();
         expect(await hello()).to.eql('Hello from ctse!');
       });
 
@@ -71,6 +76,15 @@ describe('Client end-to-end', () => {
         const obj = await session.start();
         const { addResolver, one } = obj;
         expect(await addResolver(one())).to.eql(2);
+      });
+
+      it('can get the web page', async function () {
+        this.timeout(60000 * 5);
+        const { chrome } = await session.start();
+        const browser = await chrome({ baseUrl: server.url });
+        const paragraph = await browser.find('p');
+        const text = await paragraph.getText();
+        expect(text).to.eql('This page is just for testing');
       });
     });
   });

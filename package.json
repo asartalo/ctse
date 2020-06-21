@@ -29,7 +29,7 @@
     "test-e2e-verbose": "CTSE_E2E_VERBOSE=yes npm run test e2e",
     "test": "nyc _mocha --exit './{,!(node_modules)/**}/*.test.js'",
     "test-no-docker": "nyc _mocha --exit --grep @docker --invert  './{lib,e2e}/**/*.test.js'",
-    "test-fast": "nyc _mocha --exit --grep @slow --invert  './{lib,e2e}/**/*.test.js'",
+    "test-fast": "nyc mocha --exit --grep @slow --invert './{lib,e2e}/**/*.test.js'",
     "watch": "npm-watch"
   },
   "keywords": [
